@@ -13,3 +13,6 @@ end
 ```
 - Convert your project to [love.js](https://github.com/TannerRogalsky/love.js), all thanks to TannerRogalsky
 - Add the <script src = "consolewrapper.js"></script> to the index.html file created by the love.js conversion
+
+# Working Example
+- Here is the probably first ever love2d-kongregate integrated game: https://www.kongregate.com/games/MrcSnm/industrial-flying-creature
