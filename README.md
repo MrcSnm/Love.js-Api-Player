@@ -15,9 +15,7 @@ require 'js'
 - Add the **`<script src = "consolewrapper.js"></script>`** to the index.html file created by the love.js conversion
 - After that, for a simple JS call, where you don't expect any return value, call:
 ```lua
-function callJS(funcToCall)
-    print("callJavascriptFunction " .. funcToCall)
-end
+JS.callJS('kongregate.stats.submit("Score", 1000);')
 ```
 - However, if you do wish to retrieve the value from the JS Api Call, it is a bit more complicated, you will need to use the full extent of js.lua:
 
