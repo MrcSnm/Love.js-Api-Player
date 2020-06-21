@@ -3,6 +3,7 @@ Created as a binder between love.js and javascript, it is made to be able to cal
 
 # How it works
 - It wraps the window.console logging function, and it eval's the string passed as a JS function, it still mantains the correct functionality from the old console, unless passing the key string to it, it will not log into the devtools console, as it should just execute it
+- **BEWARE**: There are some sites that doesn't let you wrap their console, if you're not able doing, the API won't work
 
 # How to
 - Download js.lua file
@@ -11,7 +12,7 @@ Created as a binder between love.js and javascript, it is made to be able to cal
 require 'js'
 ```
 - Convert your project to [love.js](https://github.com/TannerRogalsky/love.js), all thanks to TannerRogalsky
-- Add the <script src = "consolewrapper.js"></script> to the index.html file created by the love.js conversion
+- Add the **`<script src = "consolewrapper.js"></script>`** to the index.html file created by the love.js conversion
 - After that, for a simple JS call, where you don't expect any return value, call:
 ```lua
 function callJS(funcToCall)
@@ -23,8 +24,8 @@ end
 ## Setting up for data retrieve
 
 1. After importing js.lua file, call `JS.newRequest(strApiToCallInJS, closureOnSuccess)`
-    1. strApiToCallInJS: a string of the api you want to call
-    2. closureOnSuccess: A function to call when the data arrives
+    1. **strApiToCallInJS**: a string of the api you want to call
+    2. **closureOnSuccess**: A function to call when the data arrives
 2. For retrieving your data, you must set it as a closure, kongregate has one api for getting the player username: kongregate is: kongregate.services.getUsername(), so let's try showing how we can get the data:
 ```lua
 gUsername = ""
@@ -34,7 +35,7 @@ function(data)
 end)
 ```
 3. This will make the request active, and it will store in the indexed database, for actually completing the request, you must understand if you want it to be sync our assync, in this example, I'm going to show the sync one:
-    1. In love.update, make it the first line:
+    1. In **love.update**, make it the first line:
     ```lua
     if(retrieveData(dt)) then
         return
