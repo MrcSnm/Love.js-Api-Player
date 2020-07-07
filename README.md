@@ -29,11 +29,11 @@ JS.callJS(JS.stringFunc(
     ]]
 ))
 ```
-Code blocks also supporting formatted characters for easy passing parameters inside your code:
+Code blocks also supports formatted characters for easy passing parameters inside your code:
 ```lua
 JS.callJS(JS.stringFunc(
     [[
-        return "stringFromJS "+ "%s"
+        console.log("stringFromJS "+ "%s");
     ]]
 , "stringFromLua")
 ```
