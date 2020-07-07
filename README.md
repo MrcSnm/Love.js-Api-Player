@@ -17,6 +17,28 @@ require 'js'
 ```lua
 JS.callJS('kongregate.stats.submit("Score", 1000);')
 ```
+
+## Executing Javascript code block
+It is possible to execute js code block, but you will need to call another function with JS.callJS:
+```lua
+JS.callJS(JS.stringFunc(
+    [[
+        var test = 5;
+        test+= 15;
+        console.log(test);
+    ]]
+))
+```
+Code blocks also supporting formatted characters for easy passing parameters inside your code:
+```lua
+JS.callJS(JS.stringFunc(
+    [[
+        return "stringFromJS "+ "%s"
+    ]]
+, "stringFromLua")
+```
+Please, note that code blocks doesn't support Javascript comments
+
 - However, if you do wish to retrieve the value from the JS Api Call, it is a bit more complicated, you will need to use the full extent of js.lua:
 
 ## Setting up for data retrieve
@@ -25,14 +47,24 @@ JS.callJS('kongregate.stats.submit("Score", 1000);')
     1. **strApiToCallInJS**: a string of the api you want to call
     2. **closureOnSuccess**: A function to call when the data arrives
 2. For retrieving your data, you must set it as a closure, kongregate has one api for getting the player username: kongregate is: kongregate.services.getUsername(), so let's try showing how we can get the data:
-```lua
-gUsername = ""
-JS.newRequest('kongregate.services.getUsername()', 
-function(data)
-    gUsername = data
-end)
-```
-3. This will make the request active, and it will store in the indexed database, for actually completing the request, you must understand if you want it to be sync our assync, in this example, I'm going to show the sync one:
+    ```lua
+    gUsername = ""
+    JS.newRequest('kongregate.services.getUsername()', 
+    function(data)
+        gUsername = data
+    end)
+    ```
+    1. If you wish to retrieve data from a code block, simply return from the code block
+    ```lua
+        JS.newRequest(JS.stringFunc(
+            [[
+                var test = 5;
+                return test + 15;
+            ]]
+        ))
+    ```
+
+3. This will make the request active, and it will store in the indexed database, for actually completing the request, you must choose if you want it to be sync or assync, in this example, I'm going to show the sync one:
     1. In **love.update**, make it the first line:
     ```lua
     if(retrieveData(dt)) then
@@ -42,10 +74,42 @@ end)
     2. This function will return wether if it is still trying to retrieve or not, so, returning will make the game don't update
     3. After that, you're set up for using the lib
 
-4. ### EXTRA
-    1. In lib, it is available too some error handlers, those error occurs only when the retrieveData nevers return, the default value for timeout is 2, but you can change it at your taste
-    2. `JS.newRequest` accepts 3 more parameters, the full definition is: `JS.newRequest(funcToCall, onDataLoaded, onError, timeout, optionalId)`, onError is a function that receives the requestID, timeout is a custom parameter for setting if you want to have increased or decreased timeout value, the optionalId is called optional because it will be setup as an incrementing number, but if you want, you can pass a string value for identifying errors
-    3. There is another function called `JS.setDefaultErrorFunction`, by setting it up, when your retrieveData returns an error, the function set on the defaultError will be called, there is one already that prints the id of the request if the debug is active
+## Handling promises for data retrieving
+This lib can be quite powerful if you understood how to use it, for handling promises, there is 2 ways possible
+## 1. From Javascript code
+    If you wish to call a Javascript function that will set the data for you, you will need to call a function that will receive(or set) your save path and your id: 
+```lua
+    JS.newPromiseRequest("myJsFunc('"..love.filesystem.getSaveDirectory().."', '"..myLuaId.."');", onDataLoaded, onError, timeout, myLuaId)
+```
+    This will trigger your function, but Lua won't recognize it has loaded the data, for recognizing it, you will need to call in your JS code onload data callback (usually inside Promise.resolve):
+```js
+    FS.writeFile(luaSaveDir+"/__temp"+luaId, myResolvedPromiseData);
+```
+    Passing "nil" into your myResolvedPromiseData will return as an error in your lua code, this is how you catch errors
+## 2. From Lua code
+    If instead you wish to resolve promises inside your own lua code, it is quite simple (although not as flexible when handling from JS):
+```lua
+JS.newPromiseRequest(JS.stringFunc(
+    [[
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function()
+        {    
+            if (this.readyState == 4 && this.status == 200)
+                _$_(this.responseText);
+        };
+        xhttp.open("GET", "https://example.com", true);
+        xhttp.send();
+    ]]
+```
+With this piece of code, we can directly use `_$_` as a function to load data insided Lua, **_$_** is a syntactic sugar for:
+```lua
+[[ FS.writeFile("%s", this.responseText) ]]:format(love.filesystem.getSaveDirectory().."/__temp"..promiseRequestId)
+```
+
+### EXTRA
+1. In lib, it is available too some error handlers, those error occurs only when the retrieveData nevers return, the default value for timeout is 2, but you can change it at your taste
+2. `JS.newRequest` accepts 3 more parameters, the full definition is: `JS.newRequest(funcToCall, onDataLoaded, onError, timeout, optionalId)`, onError is a function that receives the requestID, timeout is a custom parameter for setting if you want to have increased or decreased timeout value, the optionalId is called optional because it will be setup as an incrementing number, but if you want, you can pass a string value for identifying errors
+3. There is another function called `JS.setDefaultErrorFunction`, by setting it up, when your retrieveData returns an error, the function set on the defaultError will be called, there is one already that prints the id of the request if the debug is active
 
 
 # Working Example

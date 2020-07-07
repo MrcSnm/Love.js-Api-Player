@@ -54,8 +54,6 @@ function _Request:new(isPromise, command, onDataLoaded, onError, timeout, id)
     if not isPromise then
         retrieveJS(command, id) 
     else
-        --Shall be handled manually (in JS code)
-        --How to: add the function call when your events resolve: FS.writeFile("Put love.filesystem.getSaveDirectory here", "Pass a string here (NUMBER DONT WORK"))
         JS.callJS(command)
     end
     obj.onDataLoaded = onDataLoaded
@@ -114,19 +112,23 @@ end
 
 --May only be used for functions that don't return a promise
 function JS.newRequest(funcToCall, onDataLoaded, onError, timeout, optionalId)
-    local os = love.system.getOS()
     if(os ~= "Web") then
         return
     end
     table.insert(__requestQueue, _Request:new(false, funcToCall, onDataLoaded, onError, timeout or 5, optionalId or _requestCount))
 end
 
+--This function can be handled manually (in JS code)
+    --How to: add the function call when your events resolve: FS.writeFile("Put love.filesystem.getSaveDirectory here", "Pass a string here (NUMBER DONT WORK"))
+--Or it can be handled by Lua, it auto sets your data if you write the following command:
+    -- _$_(yourStringOrFunctionHere)
 function JS.newPromiseRequest(funcToCall, onDataLoaded, onError, timeout, optionalId)
-    local os = love.system.getOS()
     if(os ~= "Web") then
         return
     end
-    table.insert(__requestQueue, _Request:new(true, funcToCall, onDataLoaded, onError, timeout or 5, optionalId or _requestCount))
+    optionalId = optionalId or _requestCount
+    funcToCall = funcToCall:gsub("_$_%(", "FS.writeFile('"..love.filesystem.getSaveDirectory().."/__temp"..optionalId.."', ")
+    table.insert(__requestQueue, _Request:new(true, funcToCall, onDataLoaded, onError, timeout or 5, optionalId))
 end
 
 
