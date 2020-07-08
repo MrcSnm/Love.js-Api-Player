@@ -94,7 +94,7 @@ function _Request:new(isPromise, command, onDataLoaded, onError, timeout, id)
 end
 
 --Place this function on love.update and set it to return if it returns false (This API is synchronous)
-function retrieveData(dt)
+function JS.retrieveData(dt)
     local isRetrieving = #__requestQueue ~= 0
     local deadRequests = {}
     for i = 1, #__requestQueue do

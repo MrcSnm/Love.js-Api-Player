@@ -67,7 +67,7 @@ Please, note that code blocks doesn't support Javascript comments
 3. This will make the request active, and it will store in the indexed database, for actually completing the request, you must choose if you want it to be sync or assync, in this example, I'm going to show the sync one:
     1. In **love.update**, make it the first line:
     ```lua
-    if(retrieveData(dt)) then
+    if(JS.retrieveData(dt)) then
         return
     end
     ```
