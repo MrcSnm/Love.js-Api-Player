@@ -29,11 +29,11 @@ JS.callJS(JS.stringFunc(
     ]]
 ))
 ```
-Code blocks also supporting formatted characters for easy passing parameters inside your code:
+Code blocks also supports formatted characters for easy passing parameters inside your code:
 ```lua
 JS.callJS(JS.stringFunc(
     [[
-        return "stringFromJS "+ "%s"
+        console.log("stringFromJS "+ "%s");
     ]]
 , "stringFromLua")
 ```
@@ -77,18 +77,19 @@ Please, note that code blocks doesn't support Javascript comments
 ## Handling promises for data retrieving
 This lib can be quite powerful if you understood how to use it, for handling promises, there is 2 ways possible
 ## 1. From Javascript code
-    If you wish to call a Javascript function that will set the data for you, you will need to call a function that will receive(or set) your save path and your id: 
+If you wish to call a Javascript function that will set the data for you, you will need to call a function that will receive(or set) your save path and your id: 
 ```lua
     JS.newPromiseRequest("myJsFunc('"..love.filesystem.getSaveDirectory().."', '"..myLuaId.."');", onDataLoaded, onError, timeout, myLuaId)
 ```
-    This will trigger your function, but Lua won't recognize it has loaded the data, for recognizing it, you will need to call in your JS code onload data callback (usually inside Promise.resolve):
+This will trigger your function, but Lua won't recognize it has loaded the data, for recognizing it, you will need to call in your JS code onload data callback (usually inside Promise.resolve):
 ```js
     FS.writeFile(luaSaveDir+"/__temp"+luaId, myResolvedPromiseData);
 ```
-    Passing "ERROR" into your myResolvedPromiseData will return as an error in your lua code, this is how you catch errors, you can put additional data for better
-    error handling
+**Always remember passing "/__temp" with your luaId to your saveDir**
+Passing "ERROR" into your myResolvedPromiseData will return as an error in your lua code, this is how you catch errors, you can put additional data for better
+error handling
 ## 2. From Lua code
-    If instead you wish to resolve promises inside your own lua code, it is quite simple (although not as flexible when handling from JS):
+If instead you wish to resolve promises inside your own lua code, it is quite simple (although not as flexible when handling from JS):
 ```lua
 JS.newPromiseRequest(JS.stringFunc(
     [[
@@ -106,6 +107,7 @@ With this piece of code, we can directly use `_$_` as a function to load data in
 ```lua
 [[ FS.writeFile("%s", this.responseText) ]]:format(love.filesystem.getSaveDirectory().."/__temp"..promiseRequestId)
 ```
+So, prefer using it, as you can see, it reduces much written code
 
 ### EXTRA
 1. In lib, it is available too some error handlers, those error occurs only when the retrieveData nevers return, the default value for timeout is 2, but you can change it at your taste
