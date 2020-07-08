@@ -85,7 +85,8 @@ This lib can be quite powerful if you understood how to use it, for handling pro
 ```js
     FS.writeFile(luaSaveDir+"/__temp"+luaId, myResolvedPromiseData);
 ```
-    Passing "nil" into your myResolvedPromiseData will return as an error in your lua code, this is how you catch errors
+    Passing "ERROR" into your myResolvedPromiseData will return as an error in your lua code, this is how you catch errors, you can put additional data for better
+    error handling
 ## 2. From Lua code
     If instead you wish to resolve promises inside your own lua code, it is quite simple (although not as flexible when handling from JS):
 ```lua

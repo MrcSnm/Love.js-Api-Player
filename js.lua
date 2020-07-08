@@ -76,16 +76,15 @@ function _Request:new(isPromise, command, onDataLoaded, onError, timeout, id)
         local retData = self:getData()
 
         if((retData ~= nil and retData ~= "nil") or self.timeOut <= 0) then
-            if(retData ~= nil and retData ~= "nil") then
+            if(retData ~= nil and retData:gmatch("ERROR") == nil) then
                 if isDebugActive then
                     print("Data has been retrieved "..retData)
                 end
                 self.onDataLoaded(retData)
-                self:purgeData()
             else
-                self.onError(self.id)
+                self.onError(self.id, retData)
             end
-            -- clearTemp(self.id)
+            self:purgeData()
             return false
         else
             return true
@@ -138,8 +137,12 @@ function JS.setDefaultErrorFunction(func)
     __defaultErrorFunction = func
 end
 
-JS.setDefaultErrorFunction(function(id)
+JS.setDefaultErrorFunction(function(id, error)
     if( isDebugActive ) then
-        print("Data could not be loaded for id:'"..id.."'")
+        local msg = "Data could not be loaded for id:'"..id.."'"
+        if(error)then
+            msg = msg.."\nError: "..error
+        end
+        print(msg)
     end
 end)
