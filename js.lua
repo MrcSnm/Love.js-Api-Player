@@ -76,7 +76,7 @@ function _Request:new(isPromise, command, onDataLoaded, onError, timeout, id)
         local retData = self:getData()
 
         if((retData ~= nil and retData ~= "nil") or self.timeOut <= 0) then
-            if(retData ~= nil and retData:gmatch("ERROR") == nil) then
+            if(retData ~= nil and retData:match("ERROR") == nil) then
                 if isDebugActive then
                     print("Data has been retrieved "..retData)
                 end
@@ -104,7 +104,10 @@ function JS.retrieveData(dt)
         end
     end
     for i = 1, #deadRequests do
-        __requestQueue[deadRequests[i]] = nil
+        if(isDebugActive) then
+            print("Request died: "..deadRequests[i])
+        end
+        table.remove(__requestQueue, deadRequests[i])
     end
     return isRetrieving
 end
