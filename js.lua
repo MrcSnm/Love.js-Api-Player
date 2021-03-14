@@ -143,3 +143,9 @@ JS.setDefaultErrorFunction(function(id)
         print("Data could not be loaded for id:'"..id.."'")
     end
 end)
+
+JS.callJS(JS.stringFunc(
+    [[
+        __getWebDb("%s", "%s");
+    ]]
+"MyGame", love.filesystem.getSaveDirectory()))
