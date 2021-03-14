@@ -144,7 +144,7 @@ async function __readWebDB(objStore, id)
     }   
 }
 
-if(!FS)
+if(typeof FS !== 'undefined' && FS !== null)
 {
     FS = {};
     FS.writeFile = function(where, content)
