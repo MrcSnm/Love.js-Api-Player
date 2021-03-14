@@ -67,7 +67,7 @@ Please, note that code blocks doesn't support Javascript comments
 3. This will make the request active, and it will store in the indexed database, for actually completing the request, you must choose if you want it to be sync or assync, in this example, I'm going to show the sync one:
     1. In **love.update**, make it the first line:
     ```lua
-    if(retrieveData(dt)) then
+    if(JS.retrieveData(dt)) then
         return
     end
     ```
@@ -86,8 +86,8 @@ This will trigger your function, but Lua won't recognize it has loaded the data,
     FS.writeFile(luaSaveDir+"/__temp"+luaId, myResolvedPromiseData);
 ```
 **Always remember passing "/__temp" with your luaId to your saveDir**
-Passing "nil" into your myResolvedPromiseData will return as an error in your lua code, this is how you catch errors
-
+Passing "ERROR" into your myResolvedPromiseData will return as an error in your lua code, this is how you catch errors, you can put additional data for better
+error handling
 ## 2. From Lua code
 If instead you wish to resolve promises inside your own lua code, it is quite simple (although not as flexible when handling from JS):
 ```lua
