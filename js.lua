@@ -152,6 +152,6 @@ end)
 
 JS.callJS(JS.stringFunc(
     [[
-        __getWebDb("%s", "%s");
+        __getWebDB("%s", "%s");
     ]]
 "MyGame", love.filesystem.getSaveDirectory()))
