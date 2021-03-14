@@ -150,8 +150,9 @@ JS.setDefaultErrorFunction(function(id, error)
     end
 end)
 
+
 JS.callJS(JS.stringFunc(
     [[
-        __getWebDB("%s", "%s");
+        __getWebDB("%s");
     ]]
-"MyGame", love.filesystem.getSaveDirectory()))
+"__LuaJSDB")

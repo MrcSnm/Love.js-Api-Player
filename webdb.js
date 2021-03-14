@@ -15,13 +15,10 @@ if(!window.indexedDB)
 var __webDb = null;
 var __webTunnel = ""
 var __currRequest = null
-var _defaultPath = ""
-async function __getWebDB(dbName, defaultPathName)
+async function __getWebDB(dbName)
 {
     if(__webTunnel == "")
         __webTunnel = dbName;
-    if(defaultPathName)
-        _defaultPath = defaultPathName + "/"
     return new Promise(function(resolve, reject)
     {
         if(__webDb != null)
@@ -103,7 +100,7 @@ function ___getLoveJSCompatibleObject(value)
     }
 }
 
-async function __storeWebDB(value, objStore, id)
+async function __storeWebDB(value, objStore, where)
 {
     await __getWebDB(__webTunnel);
     console.log("Storing value '" + value + "'")    
@@ -111,14 +108,14 @@ async function __storeWebDB(value, objStore, id)
 
     let transaction = __webDb.transaction(objStore, "readwrite");
     let store = transaction.objectStore(objStore);
-    let request = store.put(lovejsCompatibleObject, _defaultPath+"__temp"+id);
+    let request = store.put(lovejsCompatibleObject, where);
     request.onsuccess = function()
     {
-        console.log("'" + value + "' were succesfully added to __temp"+id);
+        console.log("'" + value + "' were succesfully added to "+where);
     }
     request.onerror = function()
     {
-        console.error("Could not add the value '" + value + "' to __temp"+id+": " + request.error);
+        console.error("Could not add the value '" + value + "' to "+where +": " + request.error);
     }
 }
 
@@ -131,20 +128,20 @@ function __unconvertFromUint8Array(arr)
  * Please use it only for debugging purposes
  * @param {String= "FILE_DATA"} objStore 
  */
-async function __readWebDB(objStore, id)
+async function __readWebDB(objStore, where)
 {
     await __getWebDB(__webTunnel);
     objStore = (objStore == undefined) ? "FILE_DATA" : objStore;
     let transaction = __webDb.transaction(objStore, "readonly");
     let store = transaction.objectStore(objStore);
-    let request = store.get(_defaultPath+"__temp"+id);
+    let request = store.get(where);
     request.onsuccess = function()
     {
         console.log("Value gotten: " + __unconvertFromUint8Array(request.result.contents));
     }   
 }
 
-if(typeof FS !== 'undefined' && FS !== null)
+if(typeof FS === 'undefined')
 {
     FS = {};
     FS.writeFile = function(where, content)
