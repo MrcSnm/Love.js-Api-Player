@@ -94,7 +94,7 @@ function ___getLoveJSCompatibleObject(value)
     value = ___convertToUint8Array(value); //Content must be Uint8Array
 
     return {
-        timestamp: new Date(new Date().setDate(new Date().getDate()-1)),
+        timestamp: Date.now(),
         mode : 33152, //For some reason it is the mode used for when doing love.filesystem.write
         contents: value //Uint8Array
     }
