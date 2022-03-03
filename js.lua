@@ -155,4 +155,4 @@ JS.callJS(JS.stringFunc(
     [[
         __getWebDB("%s");
     ]]
-"__LuaJSDB"))
+, "__LuaJSDB"))
