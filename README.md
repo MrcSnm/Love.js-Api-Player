@@ -109,6 +109,14 @@ With this piece of code, we can directly use `_$_` as a function to load data in
 ```
 So, prefer using it, as you can see, it reduces much written code
 
+
+# Integration with Davidobot lovejs
+[Davidobot's fork](https://github.com/Davidobot/love.js)' has some differences from the [TannerRogalsky's one](https://github.com/TannerRogalsky/love.js/).
+There is a file in which is able to fix the difference about saving onto the file system (which is how the api player works). This file is `globalizeFS.js`.
+
+It is a nodejs based solution for actually saving the Davidobot's FS into the global scope for the Lua being able to actually execute it. Integrate it with your
+build for love.js. After outputting the love.js file, execute `node globalizeFS.js`. It will automatically replace the correct lines with the necessary code.
+
 ### EXTRA
 1. In lib, it is available too some error handlers, those error occurs only when the retrieveData nevers return, the default value for timeout is 2, but you can change it at your taste
 2. `JS.newRequest` accepts 3 more parameters, the full definition is: `JS.newRequest(funcToCall, onDataLoaded, onError, timeout, optionalId)`, onError is a function that receives the requestID, timeout is a custom parameter for setting if you want to have increased or decreased timeout value, the optionalId is called optional because it will be setup as an incrementing number, but if you want, you can pass a string value for identifying errors
