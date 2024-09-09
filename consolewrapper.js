@@ -32,6 +32,17 @@ var newConsole = (function(oldConsole)
                 oldConsole.log(data[0], data.splice(1));
             return null;
         },
+        info : function()
+        {
+            var data = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                data[_i] = arguments[_i];
+            }
+            if(data.length == 1)
+                oldConsole.info(data[0]);
+            else
+                oldConsole.info(data[0], data.splice(1));
+        },
         warn : function()
         {
             var data = [];
